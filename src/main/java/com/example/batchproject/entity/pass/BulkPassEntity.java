@@ -1,4 +1,4 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.pass;
 
 
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

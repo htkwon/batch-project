@@ -1,5 +1,6 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.user;
 
+import com.example.batchproject.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="user_group_mapping")
 @IdClass(UserGroupMappingId.class)
-public class UserGroupMappingEntity extends BaseEntity{
+public class UserGroupMappingEntity extends BaseEntity {
 
     @Id
     private String userGroupId;

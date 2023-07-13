@@ -1,6 +1,6 @@
 package com.example.batchproject.repository;
 
-import com.example.batchproject.entity.PassEntity;
+import com.example.batchproject.entity.pass.PassEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

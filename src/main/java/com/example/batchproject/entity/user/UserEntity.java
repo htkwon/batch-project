@@ -1,6 +1,7 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.user;
 
 
+import com.example.batchproject.entity.BaseEntity;
 import com.example.batchproject.status.UserStatus;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;

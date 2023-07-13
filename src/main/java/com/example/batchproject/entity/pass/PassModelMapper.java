@@ -1,4 +1,4 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.pass;
 
 
 import com.example.batchproject.status.PassStatus;

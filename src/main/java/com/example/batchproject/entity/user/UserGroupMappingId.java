@@ -1,4 +1,4 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.user;
 
 
 import lombok.Getter;

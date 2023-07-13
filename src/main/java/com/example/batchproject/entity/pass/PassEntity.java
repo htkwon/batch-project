@@ -1,5 +1,6 @@
-package com.example.batchproject.entity;
+package com.example.batchproject.entity.pass;
 
+import com.example.batchproject.entity.BaseEntity;
 import com.example.batchproject.status.PassStatus;
 import lombok.Getter;
 import lombok.Setter;

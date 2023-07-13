@@ -1,6 +1,10 @@
 package com.example.batchproject.job.pass;
 
-import com.example.batchproject.entity.*;
+import com.example.batchproject.entity.pass.BulkPassEntity;
+import com.example.batchproject.entity.pass.BulkPassStatus;
+import com.example.batchproject.entity.pass.PassEntity;
+import com.example.batchproject.entity.pass.PassModelMapper;
+import com.example.batchproject.entity.user.UserGroupMappingEntity;
 import com.example.batchproject.repository.BulkPassRepository;
 import com.example.batchproject.repository.PassRepository;
 import com.example.batchproject.repository.UserGroupMappingRepository;
@@ -60,6 +64,6 @@ public class AddPassesTasklet implements Tasklet {
             PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity,userId);
             passEntities.add(passEntity);
         }
-        return passRepository.saveAll(passEntities).size();  
+        return passRepository.saveAll(passEntities).size();
     }
 }

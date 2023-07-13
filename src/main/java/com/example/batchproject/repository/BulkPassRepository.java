@@ -1,7 +1,7 @@
 package com.example.batchproject.repository;
 
-import com.example.batchproject.entity.BulkPassEntity;
-import com.example.batchproject.entity.BulkPassStatus;
+import com.example.batchproject.entity.pass.BulkPassEntity;
+import com.example.batchproject.entity.pass.BulkPassStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
