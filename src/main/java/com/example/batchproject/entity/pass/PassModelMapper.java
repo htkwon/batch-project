@@ -1,6 +1,7 @@
 package com.example.batchproject.entity.pass;
 
 
+import com.example.batchproject.status.BulkPassStatus;
 import com.example.batchproject.status.PassStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

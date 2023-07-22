@@ -1,6 +1,7 @@
 package com.example.batchproject.entity.pass;
 
 
+import com.example.batchproject.status.BulkPassStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

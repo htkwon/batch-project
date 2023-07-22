@@ -1,7 +1,7 @@
 package com.example.batchproject.job.pass;
 
 import com.example.batchproject.entity.pass.BulkPassEntity;
-import com.example.batchproject.entity.pass.BulkPassStatus;
+import com.example.batchproject.status.BulkPassStatus;
 import com.example.batchproject.entity.pass.PassEntity;
 import com.example.batchproject.entity.pass.PassModelMapper;
 import com.example.batchproject.entity.user.UserGroupMappingEntity;

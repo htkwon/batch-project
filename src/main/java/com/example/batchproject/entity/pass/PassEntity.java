@@ -24,7 +24,7 @@ public class PassEntity extends BaseEntity {
     private String userId;
 
     @Enumerated(EnumType.STRING)
-    private PassStatus passStatus;
+    private PassStatus status;
     private Integer remainingCount;
 
     private LocalDateTime startedAt;

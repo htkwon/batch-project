@@ -1,4 +1,4 @@
-package com.example.batchproject.entity.pass;
+package com.example.batchproject.status;
 
 public enum BulkPassStatus {
 
