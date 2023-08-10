@@ -61,7 +61,7 @@ public class MakeWeeklyStatisticsTasklet implements Tasklet {
         weeklyStatisticsEntityMap.forEach((week,statistics)->{
             data.add(new String[]{
                     "week" + week,
-                    String.valueOf(statistics.getAllcount()),
+                    String.valueOf(statistics.getAllCount()),
                     String.valueOf(statistics.getAttendedCount()),
                     String.valueOf(statistics.getCancelledCount())
             });

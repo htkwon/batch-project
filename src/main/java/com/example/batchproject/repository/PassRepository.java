@@ -12,7 +12,7 @@ public interface PassRepository extends JpaRepository<PassEntity,Integer> {
     @Modifying
     @Query(value = "UPDATE PassEntity p" +
              "         SET p.remainingCount =:remainingCount," +
-             "             p.modifiedAt = CURRENT TIMESTAMP " +
+             "             p.modifiedAt = CURRENT_TIMESTAMP " +
              "         WHERE p.passSeq =:passSeq")
     int updateRemainingCount(Integer passSeq, Integer remainingCount);
 

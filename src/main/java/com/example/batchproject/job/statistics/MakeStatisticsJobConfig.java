@@ -32,6 +32,9 @@ import org.springframework.batch.core.job.flow.Flow;
 @RequiredArgsConstructor
 public class MakeStatisticsJobConfig {
 
+    /**
+     * 통계 데이터 구축 작업
+     */
     private final int CHUNK_SIZE = 10;
 
     private final JobBuilderFactory jobBuilderFactory;

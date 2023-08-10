@@ -4,6 +4,7 @@ import com.example.batchproject.entity.BookingEntity;
 import com.example.batchproject.entity.notification.NotificationEntity;
 import com.example.batchproject.entity.notification.NotificationEvent;
 import com.example.batchproject.entity.notification.NotificationModelMapper;
+import com.example.batchproject.status.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -25,23 +26,28 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.SyncTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
 public class SendNotificationBeforeClassJobConfig {
 
+    /**
+     * 수업 전 알림 작업
+     */
+
     private final int CHUNK_SIZE = 10;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
-    private SendNotificationItemWriter sendNotificationItemWriter;
+    private final SendNotificationItemWriter sendNotificationItemWriter;
 
 
     @Bean
     public Job sendNotificationBeforeClassJob(){
-        return this.jobBuilderFactory.get("sendNotificationBeforClassJob")
+        return this.jobBuilderFactory.get("sendNotificationBeforeClassJob")
                 .start(addNotificationStep())
                 .next(sendNotificationStep())
                 .build();
@@ -60,12 +66,13 @@ public class SendNotificationBeforeClassJobConfig {
 
     @Bean
     public JpaPagingItemReader<BookingEntity> addNotificationItemReader(){
-        //상태 준비중,
+        //상태 준비중이고 예약 10분 전 entity를 찾음.
         return new JpaPagingItemReaderBuilder<BookingEntity>()
                 .name("addNotificationItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(CHUNK_SIZE)
                 .queryString("select b from BookingEntity b join fetch b.userEntity where b.status = :status and b.startedAt <= startedAt order by b.bookingSeq")
+                .parameterValues(Map.of("status", BookingStatus.READY,"startedAt", LocalDateTime.now().plusMinutes(10)))
                 .build();
     }
 

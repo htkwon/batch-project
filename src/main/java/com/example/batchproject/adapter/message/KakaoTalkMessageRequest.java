@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.mapstruct.ap.shaded.freemarker.core.TemplateObject;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

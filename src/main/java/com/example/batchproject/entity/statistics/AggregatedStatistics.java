@@ -1,9 +1,6 @@
 package com.example.batchproject.entity.statistics;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,12 +11,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AggregatedStatistics {
     private LocalDateTime statisticsAt;
-    private Long allcount;
+    private Long allCount;
     private Long attendedCount;
     private Long cancelledCount;
 
+
     public void merge(final AggregatedStatistics statistics){
-        this.allcount += statistics.getAllcount();
+        this.allCount += statistics.getAllCount();
         this.attendedCount += statistics.getAttendedCount();
         this.cancelledCount += statistics.getCancelledCount();
     }

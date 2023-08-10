@@ -30,13 +30,18 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class UsePassesJobConfig {
 
+    /**
+     * 수업 후 이용권 차감 작업
+     *
+     */
+
     private final int CHUNK_SIZE = 10;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
     private final PassRepository passRepository;
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
 
     @Bean

@@ -12,10 +12,15 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class AddPassesJobConfig {
 
+    /**
+     * 이용권 일괄 지급
+     */
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final AddPassesTasklet addPassesTasklet;
+
+
 
     @Bean
     public Job addPassesJob(){

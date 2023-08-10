@@ -23,6 +23,13 @@ import java.util.List;
 @Component
 public class AddPassesTasklet implements Tasklet {
 
+    /**
+     * 이용권 일괄 지급 tasklet
+     * Tasklet?
+     * 1.단순 작업 실행
+     * 2. 비동기 작업과 통합 (비동기 작업을 실행하고 완료 여부 확인 가능)
+     */
+
     private final PassRepository passRepository;
     private final BulkPassRepository bulkPassRepository;
     private final UserGroupMappingRepository userGroupMappingRepository;
@@ -44,10 +51,10 @@ public class AddPassesTasklet implements Tasklet {
         int count = 0;
 
         for(BulkPassEntity bulkPassEntity : bulkPassEntities){
-            final List<String> userids = userGroupMappingRepository.findByUserGroupId(bulkPassEntity.getUserGroupId())
+            final List<String> userIds = userGroupMappingRepository.findByUserGroupId(bulkPassEntity.getUserGroupId())
                     .stream().map(UserGroupMappingEntity::getUserId).toList();
 
-            count += addPasses(bulkPassEntity, userids);
+            count += addPasses(bulkPassEntity, userIds);
             bulkPassEntity.setStatus(BulkPassStatus.COMPLETED);
 
 

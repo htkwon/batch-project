@@ -25,6 +25,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ExpirePassesJobConfig {
 
+    /**
+     * 이용권 만료 작업
+     */
+
     private final int CHUNCK_SIZE = 5;
 
     private final JobBuilderFactory jobBuilderFactory;
@@ -48,12 +52,19 @@ public class ExpirePassesJobConfig {
                 .build();
     }
 
+    /**
+     * JpaCursorItemReader란?
+     * 1. ItemReader의 구현체 중 하나.
+     * 2. 대량의 데이터를 처리할 때 유용하며, 특히 큰 데이터베이스 테이블에서 데이터를 페이징 처리하고 읽어오는데 적합.
+     * 3. 커서 방식으로 데이터를 읽어오므로, 메모리 사용량을 최소화하고 대량의 데이터를 효율적으로 처리할 수 있음.
+     * 4. 병렬 처리. (CHUNK 단위)
+     */
 
     @Bean
     @StepScope
     public JpaCursorItemReader<PassEntity> expirePassesItemReader(){
         return new JpaCursorItemReaderBuilder<PassEntity>()
-                .name("expirepassesItemReader")
+                .name("expirePassesItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select p from PassEntity p where p.status =:status and p.endedAt <= :endedAt")
                 .parameterValues(Map.of("status", PassStatus.PROGRESSED,"endedAt", LocalDateTime.now()))

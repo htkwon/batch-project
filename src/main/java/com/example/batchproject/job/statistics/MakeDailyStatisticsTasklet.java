@@ -47,7 +47,7 @@ public class MakeDailyStatisticsTasklet implements Tasklet {
         for(AggregatedStatistics statistics : statisticsList){
             data.add(new String[]{
                     LocalDateTimeUtils.format(statistics.getStatisticsAt()),
-                    String.valueOf(statistics.getAllcount()),
+                    String.valueOf(statistics.getAllCount()),
                     String.valueOf(statistics.getAttendedCount()),
                     String.valueOf(statistics.getCancelledCount())
             });
