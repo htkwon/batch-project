@@ -60,7 +60,7 @@ CREATE TABLE `user`
     `user_name`   varchar(50) NOT NULL COMMENT '사용자 이름',
     `status`      varchar(10) NOT NULL COMMENT '상태',
     `phone`       varchar(50)          DEFAULT NULL COMMENT '연락처',
-    `meta`        TEXT                 DEFAULT NULL COMMENT '메타 정보, JSON',
+    `uuid`        varchar(30)                 DEFAULT NULL COMMENT '메타 정보, JSON',
     `created_at`  timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
     `modified_at` timestamp            DEFAULT NULL COMMENT '수정 일시',
     PRIMARY KEY (`user_id`)
@@ -81,7 +81,7 @@ CREATE TABLE `notification`
 (
     `notification_seq` int           NOT NULL AUTO_INCREMENT COMMENT '알람 순번',
     `uuid`             varchar(20)   NOT NULL COMMENT '사용자 uuid (카카오톡)',
-    `event`            varchar(10)   NOT NULL COMMENT '이벤트',
+    `event`            varchar(20)   NOT NULL COMMENT '이벤트',
     `text`             varchar(1000) NOT NULL COMMENT '알람 내용',
     `sent`             tinyint(1)    NOT NULL DEFAULT '0' COMMENT '발송 여부',
     `sent_at`          timestamp              DEFAULT NULL COMMENT '발송 일시',
