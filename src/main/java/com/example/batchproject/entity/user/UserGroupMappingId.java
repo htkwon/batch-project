@@ -8,8 +8,6 @@ import lombok.ToString;
 import java.io.Serializable;
 
 @Getter
-@Setter
-@ToString
 public class UserGroupMappingId implements Serializable {
 
     private String userGroupId;

@@ -29,7 +29,7 @@ public class ExpirePassesJobConfig {
      * 이용권 만료 작업
      */
 
-    private final int CHUNCK_SIZE = 5;
+    private final int CHUNK_SIZE = 5;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -37,15 +37,16 @@ public class ExpirePassesJobConfig {
 
 
     @Bean
-    public Job expirePassJob(){
+    public Job expirePassJob() {
         return this.jobBuilderFactory.get("expirePassJob")
                 .start(expirePassStep())
                 .build();
     }
+
     @Bean
-    public Step expirePassStep(){
+    public Step expirePassStep() {
         return this.stepBuilderFactory.get("expirePassStep")
-                .<PassEntity,PassEntity>chunk(CHUNCK_SIZE)
+                .<PassEntity, PassEntity>chunk(CHUNK_SIZE)
                 .reader(expirePassesItemReader())
                 .processor(expirePassesItemProcessor())
                 .writer(expirePassesItemWriter())
@@ -62,18 +63,18 @@ public class ExpirePassesJobConfig {
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<PassEntity> expirePassesItemReader(){
+    public JpaCursorItemReader<PassEntity> expirePassesItemReader() {
         return new JpaCursorItemReaderBuilder<PassEntity>()
                 .name("expirePassesItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select p from PassEntity p where p.status =:status and p.endedAt <= :endedAt")
-                .parameterValues(Map.of("status", PassStatus.PROGRESSED,"endedAt", LocalDateTime.now()))
+                .parameterValues(Map.of("status", PassStatus.PROGRESSED, "endedAt", LocalDateTime.now()))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<PassEntity,PassEntity> expirePassesItemProcessor(){
-        return passEntity ->{
+    public ItemProcessor<PassEntity, PassEntity> expirePassesItemProcessor() {
+        return passEntity -> {
             passEntity.setStatus(PassStatus.EXPIRED);
             passEntity.setExpiredAt(LocalDateTime.now());
             return passEntity;
@@ -81,28 +82,11 @@ public class ExpirePassesJobConfig {
     }
 
     @Bean
-    public JpaItemWriter<PassEntity> expirePassesItemWriter(){
+    public JpaItemWriter<PassEntity> expirePassesItemWriter() {
         return new JpaItemWriterBuilder<PassEntity>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

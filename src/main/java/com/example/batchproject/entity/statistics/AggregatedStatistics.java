@@ -2,12 +2,9 @@ package com.example.batchproject.entity.statistics;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@ToString
 @AllArgsConstructor
 public class AggregatedStatistics {
     private LocalDateTime statisticsAt;

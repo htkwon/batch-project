@@ -11,7 +11,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -23,10 +22,10 @@ import org.springframework.batch.item.support.builder.SynchronizedItemStreamRead
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.SyncTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 @Configuration
@@ -46,7 +45,7 @@ public class SendNotificationBeforeClassJobConfig {
 
 
     @Bean
-    public Job sendNotificationBeforeClassJob(){
+    public Job sendNotificationBeforeClassJob() {
         return this.jobBuilderFactory.get("sendNotificationBeforeClassJob")
                 .start(addNotificationStep())
                 .next(sendNotificationStep())
@@ -54,7 +53,7 @@ public class SendNotificationBeforeClassJobConfig {
     }
 
     @Bean
-    public Step addNotificationStep(){
+    public Step addNotificationStep() {
         return this.stepBuilderFactory.get("addNotificationStep")
                 .<BookingEntity, NotificationEntity>chunk(CHUNK_SIZE)
                 .reader(addNotificationItemReader())
@@ -65,36 +64,34 @@ public class SendNotificationBeforeClassJobConfig {
 
 
     @Bean
-    public JpaPagingItemReader<BookingEntity> addNotificationItemReader(){
+    public JpaPagingItemReader<BookingEntity> addNotificationItemReader() {
         //상태 준비중이고 예약 10분 전 entity를 찾음.
         return new JpaPagingItemReaderBuilder<BookingEntity>()
                 .name("addNotificationItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(CHUNK_SIZE)
-                .queryString("select b from BookingEntity b join fetch b.userEntity where b.status = :status and b.startedAt <= startedAt order by b.bookingSeq")
-                .parameterValues(Map.of("status", BookingStatus.READY,"startedAt", LocalDateTime.now().plusMinutes(10)))
+                .queryString("select b from BookingEntity b join fetch b.userEntity where b.status = :status and b.startedAt <= :startedAt order by b.bookingSeq")
+                .parameterValues(Map.of("status", BookingStatus.READY, "startedAt", LocalDateTime.now().plusMinutes(10)))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<BookingEntity,NotificationEntity> addNotificationItemProcessor(){
+    public ItemProcessor<BookingEntity, NotificationEntity> addNotificationItemProcessor() {
         return bookingEntity -> NotificationModelMapper.INSTANCE.toNotificationEntity(bookingEntity, NotificationEvent.BEFORE_CLASS);
     }
 
     @Bean
-    public JpaItemWriter<NotificationEntity> addNotificationItemWriter(){
+    public JpaItemWriter<NotificationEntity> addNotificationItemWriter() {
         return new JpaItemWriterBuilder<NotificationEntity>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
     }
 
 
-
-
     @Bean
-    public Step sendNotificationStep(){
+    public Step sendNotificationStep() {
         return this.stepBuilderFactory.get("sendNotificationStep")
-                .<NotificationEntity,NotificationEntity>chunk(CHUNK_SIZE)
+                .<NotificationEntity, NotificationEntity>chunk(CHUNK_SIZE)
                 .reader(sendNotificationItemReader())
                 .writer(sendNotificationItemWriter)
                 .taskExecutor(new SimpleAsyncTaskExecutor())
@@ -106,20 +103,19 @@ public class SendNotificationBeforeClassJobConfig {
      * safe해야하는 경우에는 대부분 paging 기법 사용.
      */
     @Bean
-    public SynchronizedItemStreamReader<NotificationEntity> sendNotificationItemReader(){
+    public SynchronizedItemStreamReader<NotificationEntity> sendNotificationItemReader() {
         //이벤트(event)가 수업 전이며, 발송 여부(sent)가 미발송인 알람이 조회 대상이 됩니다.
         JpaCursorItemReader<NotificationEntity> itemReader = new JpaCursorItemReaderBuilder<NotificationEntity>()
                 .name("sendNotificationItemReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select n from NotificationEntity n where n.event =:event and n.sent =:sent")
-                .parameterValues(Map.of("event",NotificationEvent.BEFORE_CLASS,"sent",false))
+                .queryString("select n from NotificationEntity n where n.event = :event and n.sent = :sent")
+                .parameterValues(Map.of("event", NotificationEvent.BEFORE_CLASS, "sent", false))
                 .build();
 
         return new SynchronizedItemStreamReaderBuilder<NotificationEntity>()
                 .delegate(itemReader)
                 .build();
     }
-
 
 
 }

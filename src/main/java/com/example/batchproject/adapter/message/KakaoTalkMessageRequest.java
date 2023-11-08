@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class KakaoTalkMessageRequest {
     @Getter
     @Setter
     @ToString
-    public static class TemplateObject{
+    public static class TemplateObject {
         @JsonProperty("object_type")
         private String objectType;
         private String text;
@@ -30,14 +31,14 @@ public class KakaoTalkMessageRequest {
         @Getter
         @Setter
         @ToString
-        public static class Link{
+        public static class Link {
             @JsonProperty("web_url")
             private String webUrl;
         }
 
     }
 
-    public KakaoTalkMessageRequest(String uuid, String text){
+    public KakaoTalkMessageRequest(String uuid, String text) {
         List<String> receiverUuids = Collections.singletonList(uuid);
 
         TemplateObject.Link link = new TemplateObject.Link();

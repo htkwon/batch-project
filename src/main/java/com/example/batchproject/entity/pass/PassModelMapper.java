@@ -15,11 +15,11 @@ public interface PassModelMapper {
     PassModelMapper INSTANCE = Mappers.getMapper(PassModelMapper.class);
 
     @Mapping(target = "status", qualifiedByName = "defaultStatus")
-    @Mapping(target = "remainingCount",source = "bulkPassEntity.count")
-    PassEntity toPassEntity(BulkPassEntity bulkPassEntity,String userId);
+    @Mapping(target = "remainingCount", source = "bulkPassEntity.count")
+    PassEntity toPassEntity(BulkPassEntity bulkPassEntity, String userId);
 
     @Named("defaultStatus")
-    default PassStatus status(BulkPassStatus status){
+    default PassStatus status(BulkPassStatus status) {
         return PassStatus.READY;
     }
 

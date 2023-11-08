@@ -32,7 +32,7 @@ public class MakeWeeklyStatisticsTasklet implements Tasklet {
 
     private final StatisticsRepository statisticsRepository;
 
-    public MakeWeeklyStatisticsTasklet(StatisticsRepository statisticsRepository){
+    public MakeWeeklyStatisticsTasklet(StatisticsRepository statisticsRepository) {
         this.statisticsRepository = statisticsRepository;
     }
 
@@ -41,24 +41,23 @@ public class MakeWeeklyStatisticsTasklet implements Tasklet {
         final LocalDateTime from = LocalDateTimeUtils.parse(fromString);
         final LocalDateTime to = LocalDateTimeUtils.parse(toString);
 
-        final List<AggregatedStatistics> statisticsList = statisticsRepository.findByStatisticsAtBetweenAndGroupBy(from,to);
+        final List<AggregatedStatistics> statisticsList = statisticsRepository.findByStatisticsAtBetweenAndGroupBy(from, to);
 
         Map<Integer, AggregatedStatistics> weeklyStatisticsEntityMap = new LinkedHashMap<>();
 
-        for(AggregatedStatistics statistics : statisticsList){
+        for (AggregatedStatistics statistics : statisticsList) {
             int week = LocalDateTimeUtils.getWeekOfYear(statistics.getStatisticsAt());
             AggregatedStatistics savedStatisticsEntity = weeklyStatisticsEntityMap.get(week);
 
-            if(savedStatisticsEntity == null){
-                weeklyStatisticsEntityMap.put(week,statistics);
-            }
-            else{
+            if (savedStatisticsEntity == null) {
+                weeklyStatisticsEntityMap.put(week, statistics);
+            } else {
                 savedStatisticsEntity.merge(statistics);
             }
         }
         List<String[]> data = new ArrayList<>();
-        data.add(new String[]{"week","allCount","attendedCount", "cancelledCount"});
-        weeklyStatisticsEntityMap.forEach((week,statistics)->{
+        data.add(new String[]{"week", "allCount", "attendedCount", "cancelledCount"});
+        weeklyStatisticsEntityMap.forEach((week, statistics) -> {
             data.add(new String[]{
                     "week" + week,
                     String.valueOf(statistics.getAllCount()),
@@ -68,7 +67,7 @@ public class MakeWeeklyStatisticsTasklet implements Tasklet {
         });
 
 
-        CustomCSVWriter.write("weekly_statistics" + LocalDateTimeUtils.format(from, LocalDateTimeUtils.YYYY_MM_DD)+".csv",data);
+        CustomCSVWriter.write("weekly_statistics" + LocalDateTimeUtils.format(from, LocalDateTimeUtils.YYYY_MM_DD) + ".csv", data);
         return RepeatStatus.FINISHED;
 
     }

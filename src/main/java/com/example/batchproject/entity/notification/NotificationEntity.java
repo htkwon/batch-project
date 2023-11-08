@@ -8,10 +8,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@ToString
-@Entity
 @Table(name = "notification")
 public class NotificationEntity extends BaseEntity {
 
@@ -21,10 +20,17 @@ public class NotificationEntity extends BaseEntity {
 
     private String uuid;
 
+    @Enumerated(EnumType.STRING)
     private NotificationEvent event;
     private String text;
     private boolean sent;
     private LocalDateTime sentAt;
 
+    public void setSent(boolean sent){
+        this.sent = sent;
+    }
+    public void setSentAt(LocalDateTime sentAt){
+        this.sentAt = sentAt;
+    }
 
 }

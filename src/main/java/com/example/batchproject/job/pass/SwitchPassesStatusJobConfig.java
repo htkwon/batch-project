@@ -1,6 +1,7 @@
 package com.example.batchproject.job.pass;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -10,30 +11,25 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class AddPassesJobConfig {
-
-    /**
-     * 이용권 일괄 지급
-     */
+@Slf4j
+public class SwitchPassesStatusJobConfig {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final AddPassesTasklet addPassesTasklet;
-
+    private final SwitchPassesStatusTasklet switchPassesStatusTasklet;
 
     @Bean
-    public Job addPassesJob() {
-        return this.jobBuilderFactory.get("addPassesJob")
-                .start(addPassesStep())
+    public Job switchPassesJob() {
+        return this.jobBuilderFactory.get("switchPassJob")
+                .start(switchPassesStep())
                 .build();
     }
 
     @Bean
-    public Step addPassesStep() {
-        return this.stepBuilderFactory.get("addPassesStep")
-                .tasklet(addPassesTasklet)
+    public Step switchPassesStep() {
+        return this.stepBuilderFactory.get("switchPassStep")
+                .tasklet(switchPassesStatusTasklet)
                 .build();
     }
-
 
 }

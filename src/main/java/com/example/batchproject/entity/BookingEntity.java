@@ -6,15 +6,13 @@ import com.example.batchproject.entity.user.UserEntity;
 import com.example.batchproject.status.BookingStatus;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@ToString
-@Entity
 @Table(name = "booking")
 public class BookingEntity extends BaseEntity {
 
@@ -36,19 +34,16 @@ public class BookingEntity extends BaseEntity {
     private LocalDateTime cancelledAt;
 
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="userId",insertable = false,updatable = false)
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     private UserEntity userEntity;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="passSeq", insertable = false,updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passSeq", insertable = false, updatable = false)
     private PassEntity passEntity;
 
-    public LocalDateTime getStatisticsAt(){
+    public LocalDateTime getStatisticsAt() {
         return this.endedAt.withHour(0).withMinute(0).withSecond(0).withNano(0);
     }
-
-
 
 }

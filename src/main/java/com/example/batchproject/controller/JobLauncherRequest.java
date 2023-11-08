@@ -16,7 +16,7 @@ public class JobLauncherRequest {
     private String name;
     private Properties jobParameters;
 
-    public JobParameters getJobParameters(){
+    public JobParameters getJobParameters() {
         return new JobParametersBuilder(this.jobParameters).toJobParameters();
     }
 

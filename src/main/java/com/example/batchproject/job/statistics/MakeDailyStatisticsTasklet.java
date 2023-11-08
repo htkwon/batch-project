@@ -30,7 +30,7 @@ public class MakeDailyStatisticsTasklet implements Tasklet {
 
     private final StatisticsRepository statisticsRepository;
 
-    public MakeDailyStatisticsTasklet(StatisticsRepository statisticsRepository){
+    public MakeDailyStatisticsTasklet(StatisticsRepository statisticsRepository) {
         this.statisticsRepository = statisticsRepository;
     }
 
@@ -39,12 +39,12 @@ public class MakeDailyStatisticsTasklet implements Tasklet {
         final LocalDateTime from = LocalDateTimeUtils.parse(fromString);
         final LocalDateTime to = LocalDateTimeUtils.parse(toString);
 
-        final List<AggregatedStatistics> statisticsList = statisticsRepository.findByStatisticsAtBetweenAndGroupBy(from,to);
+        final List<AggregatedStatistics> statisticsList = statisticsRepository.findByStatisticsAtBetweenAndGroupBy(from, to);
 
         List<String[]> data = new ArrayList<>();
-        data.add(new String[]{"statisticsAt","allCount","attendedCount","cancelledCount"});
+        data.add(new String[]{"statisticsAt", "allCount", "attendedCount", "cancelledCount"});
 
-        for(AggregatedStatistics statistics : statisticsList){
+        for (AggregatedStatistics statistics : statisticsList) {
             data.add(new String[]{
                     LocalDateTimeUtils.format(statistics.getStatisticsAt()),
                     String.valueOf(statistics.getAllCount()),
@@ -52,7 +52,7 @@ public class MakeDailyStatisticsTasklet implements Tasklet {
                     String.valueOf(statistics.getCancelledCount())
             });
         }
-        CustomCSVWriter.write("daily_statistics_" + LocalDateTimeUtils.format(from,LocalDateTimeUtils.YYYY_MM_DD)+ ".csv",data);
+        CustomCSVWriter.write("daily_statistics_" + LocalDateTimeUtils.format(from, LocalDateTimeUtils.YYYY_MM_DD) + ".csv", data);
         return RepeatStatus.FINISHED;
     }
 }

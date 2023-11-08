@@ -43,8 +43,4 @@ public class SendNotificationItemWriter implements ItemWriter<NotificationEntity
     }
 
 
-
-
-
-
 }

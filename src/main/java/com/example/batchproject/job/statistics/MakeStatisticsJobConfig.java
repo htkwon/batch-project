@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.batch.core.job.flow.Flow;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class MakeStatisticsJobConfig {
 
 
     @Bean
-    public Job makeStatisticsJob(){
+    public Job makeStatisticsJob() {
         Flow addStatisticsFlow = new FlowBuilder<Flow>("addStatisticsFlow")
                 .start(addStatisticsStep())
                 .build();
@@ -61,7 +63,7 @@ public class MakeStatisticsJobConfig {
 
         Flow parallelMakeStatisticsFlow = new FlowBuilder<Flow>("parallelMakeStatisticsFlow")
                 .split(new SimpleAsyncTaskExecutor())
-                .add(makeDailyStatisticsFlow,makeWeeklyStatisticsFlow)
+                .add(makeDailyStatisticsFlow, makeWeeklyStatisticsFlow)
                 .build();
 
         return this.jobBuilderFactory.get("makeStatisticsJob")
@@ -73,39 +75,39 @@ public class MakeStatisticsJobConfig {
     }
 
     @Bean
-    public Step addStatisticsStep(){
+    public Step addStatisticsStep() {
         return this.stepBuilderFactory.get("addStatisticsStep")
-                .<BookingEntity,BookingEntity>chunk(CHUNK_SIZE)
-                .reader(addStatisticsItemReader(null,null))
+                .<BookingEntity, BookingEntity>chunk(CHUNK_SIZE)
+                .reader(addStatisticsItemReader(null, null))
                 .writer(addStatisticsItemWriter())
                 .build();
     }
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<BookingEntity> addStatisticsItemReader(@Value("#{jobParameters[from]}") String fromString,@Value("#{jobParameters[to]}") String toString){
-        final LocalDateTime from  = LocalDateTimeUtils.parse(fromString);
+    public JpaCursorItemReader<BookingEntity> addStatisticsItemReader(@Value("#{jobParameters[from]}") String fromString, @Value("#{jobParameters[to]}") String toString) {
+        final LocalDateTime from = LocalDateTimeUtils.parse(fromString);
         final LocalDateTime to = LocalDateTimeUtils.parse(toString);
 
         return new JpaCursorItemReaderBuilder<BookingEntity>()
                 .name("addStatisticsItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select b from BookingEntity b where b.endedAt between :from and : to")
-                .parameterValues(Map.of("from",from,"to",to))
+                .parameterValues(Map.of("from", from, "to", to))
                 .build();
     }
 
     @Bean
-    public ItemWriter<BookingEntity> addStatisticsItemWriter(){
-        return bookingEntities ->{
+    public ItemWriter<BookingEntity> addStatisticsItemWriter() {
+        return bookingEntities -> {
             Map<LocalDateTime, StatisticsEntity> statisticsEntityMap = new HashMap<>();
-            for(BookingEntity bookingEntity : bookingEntities){
+            for (BookingEntity bookingEntity : bookingEntities) {
                 final LocalDateTime statisticsAt = bookingEntity.getStatisticsAt();
                 StatisticsEntity statisticsEntity = statisticsEntityMap.get(statisticsAt);
 
                 if (statisticsEntity == null) {
-                    statisticsEntityMap.put(statisticsAt,StatisticsEntity.create(bookingEntity));
-                }else{
+                    statisticsEntityMap.put(statisticsAt, StatisticsEntity.create(bookingEntity));
+                } else {
                     statisticsEntity.add(bookingEntity);
                 }
             }
@@ -115,14 +117,14 @@ public class MakeStatisticsJobConfig {
     }
 
     @Bean
-    public Step makeDailyStatisticsStep(){
+    public Step makeDailyStatisticsStep() {
         return this.stepBuilderFactory.get("makeDailyStatisticsStep")
                 .tasklet(makeDailyStatisticsTasklet)
                 .build();
     }
 
     @Bean
-    public Step makeWeeklyStatisticsStep(){
+    public Step makeWeeklyStatisticsStep() {
         return this.stepBuilderFactory.get("makeWeeklyStatisticsStep")
                 .tasklet(makeWeeklyStatisticsTasklet)
                 .build();

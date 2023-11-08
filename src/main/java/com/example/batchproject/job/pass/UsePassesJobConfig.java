@@ -32,7 +32,6 @@ public class UsePassesJobConfig {
 
     /**
      * 수업 후 이용권 차감 작업
-     *
      */
 
     private final int CHUNK_SIZE = 10;
@@ -45,14 +44,14 @@ public class UsePassesJobConfig {
 
 
     @Bean
-    public Job usePassesJob(){
+    public Job usePassesJob() {
         return this.jobBuilderFactory.get("usePassesJob")
                 .start(usePassesStep())
                 .build();
     }
 
     @Bean
-    public Step usePassesStep(){
+    public Step usePassesStep() {
         return this.stepBuilderFactory.get("usePassesStep")
                 .<BookingEntity, Future<BookingEntity>>chunk(CHUNK_SIZE)
                 .reader(usePassesItemReader())
@@ -63,28 +62,28 @@ public class UsePassesJobConfig {
 
 
     @Bean
-    public JpaCursorItemReader<BookingEntity> usePassesItemReader(){
+    public JpaCursorItemReader<BookingEntity> usePassesItemReader() {
         return new JpaCursorItemReaderBuilder<BookingEntity>()
                 .name("usePassesItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select b from BookingEntity b join fetch b.passEntity where b.status= :status and b.usedPass = false and b.endedAt < :endedAt")
-                .parameterValues(Map.of("status", BookingStatus.COMPLETED,"endedAt", LocalDateTime.now()))
+                .parameterValues(Map.of("status", BookingStatus.COMPLETED, "endedAt", LocalDateTime.now()))
                 .build();
     }
 
     @Bean
-    public AsyncItemProcessor<BookingEntity,BookingEntity> usePassesAsyncItemProcessor(){
-        AsyncItemProcessor<BookingEntity,BookingEntity> asyncItemProcessor  = new AsyncItemProcessor<>();
+    public AsyncItemProcessor<BookingEntity, BookingEntity> usePassesAsyncItemProcessor() {
+        AsyncItemProcessor<BookingEntity, BookingEntity> asyncItemProcessor = new AsyncItemProcessor<>();
         asyncItemProcessor.setDelegate(usePassesItemProcessor());
         asyncItemProcessor.setTaskExecutor(new SimpleAsyncTaskExecutor());
         return asyncItemProcessor;
     }
 
     @Bean
-    public ItemProcessor<BookingEntity, BookingEntity> usePassesItemProcessor(){
-        return bookingEntity ->{
+    public ItemProcessor<BookingEntity, BookingEntity> usePassesItemProcessor() {
+        return bookingEntity -> {
             PassEntity passEntity = bookingEntity.getPassEntity();
-            passEntity.setRemainingCount(passEntity.getRemainingCount()-1);
+            passEntity.setRemainingCount(passEntity.getRemainingCount() - 1);
             bookingEntity.setPassEntity(passEntity);
 
             bookingEntity.setUsedPass(true);
@@ -93,19 +92,20 @@ public class UsePassesJobConfig {
     }
 
     @Bean
-    public AsyncItemWriter<BookingEntity> usePassesAsyncItemWriter(){
+    public AsyncItemWriter<BookingEntity> usePassesAsyncItemWriter() {
         AsyncItemWriter<BookingEntity> asyncItemWriter = new AsyncItemWriter<>();
         asyncItemWriter.setDelegate(usePassesItemWriter());
         return asyncItemWriter;
     }
-    @Bean
-    public ItemWriter<BookingEntity> usePassesItemWriter(){
-        return bookingEntities ->{
-            for(BookingEntity bookingEntity : bookingEntities){
-                int updatedCount = passRepository.updateRemainingCount(bookingEntity.getPassSeq(),bookingEntity.getPassEntity().getRemainingCount());
 
-                if(updatedCount > 0){
-                    bookingRepository.updateUsedPass(bookingEntity.getPassSeq(),bookingEntity.isUsedPass());
+    @Bean
+    public ItemWriter<BookingEntity> usePassesItemWriter() {
+        return bookingEntities -> {
+            for (BookingEntity bookingEntity : bookingEntities) {
+                int updatedCount = passRepository.updateRemainingCount(bookingEntity.getPassSeq(), bookingEntity.getPassEntity().getRemainingCount());
+
+                if (updatedCount > 0) {
+                    bookingRepository.updateUsedPass(bookingEntity.getPassSeq(), bookingEntity.isUsedPass());
                 }
             }
         };

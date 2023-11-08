@@ -3,18 +3,14 @@ package com.example.batchproject.entity.pass;
 import com.example.batchproject.entity.BaseEntity;
 import com.example.batchproject.status.PassStatus;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import org.springframework.cglib.core.Local;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
 @Entity
-@Table(name="pass")
+@Getter
+@Table(name = "pass")
 public class PassEntity extends BaseEntity {
 
     @Id
@@ -31,6 +27,14 @@ public class PassEntity extends BaseEntity {
     private LocalDateTime endedAt;
     private LocalDateTime expiredAt;
 
+    public void setStatus(PassStatus status){
+        this.status = status;
+    }
+    public void setExpiredAt(LocalDateTime expiredAt){
+        this.expiredAt = expiredAt;
+    }
 
-
+    public void setRemainingCount(Integer remainingCount){
+        this.remainingCount = remainingCount;
+    }
 }

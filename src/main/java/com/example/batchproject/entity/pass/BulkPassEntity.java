@@ -3,16 +3,11 @@ package com.example.batchproject.entity.pass;
 
 import com.example.batchproject.status.BulkPassStatus;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
 @Entity
+@Getter
 @Table(name = "bulk_pass")
 public class BulkPassEntity {
     @Id
@@ -28,4 +23,9 @@ public class BulkPassEntity {
 
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
+
+    public void setStatus(BulkPassStatus status){
+        this.status = status;
+    }
+
 }

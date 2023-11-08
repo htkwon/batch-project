@@ -8,6 +8,7 @@ import com.example.batchproject.entity.user.UserGroupMappingEntity;
 import com.example.batchproject.repository.BulkPassRepository;
 import com.example.batchproject.repository.PassRepository;
 import com.example.batchproject.repository.UserGroupMappingRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AddPassesTasklet implements Tasklet {
 
     /**
@@ -35,22 +37,16 @@ public class AddPassesTasklet implements Tasklet {
     private final UserGroupMappingRepository userGroupMappingRepository;
 
 
-    public AddPassesTasklet(PassRepository passRepository, BulkPassRepository bulkPassRepository, UserGroupMappingRepository userGroupMappingRepository) {
-        this.passRepository = passRepository;
-        this.bulkPassRepository = bulkPassRepository;
-        this.userGroupMappingRepository = userGroupMappingRepository;
-    }
-
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         //이용권 시작 일시 1일 전, user group 내 각 사용자에게 이용권 추가.
         final LocalDateTime startedAt = LocalDateTime.now().minusDays(1);
-        final List<BulkPassEntity> bulkPassEntities = bulkPassRepository.findByStatusAndStartedAtGreaterThan(BulkPassStatus.READY,startedAt);
+        final List<BulkPassEntity> bulkPassEntities = bulkPassRepository.findByStatusAndStartedAtGreaterThan(BulkPassStatus.READY, startedAt);
 
 
         int count = 0;
 
-        for(BulkPassEntity bulkPassEntity : bulkPassEntities){
+        for (BulkPassEntity bulkPassEntity : bulkPassEntities) {
             final List<String> userIds = userGroupMappingRepository.findByUserGroupId(bulkPassEntity.getUserGroupId())
                     .stream().map(UserGroupMappingEntity::getUserId).toList();
 
@@ -65,10 +61,10 @@ public class AddPassesTasklet implements Tasklet {
     }
 
     //bulkPass의 정보로 pass 데이터 생성.
-    private int addPasses(BulkPassEntity bulkPassEntity, List<String> userIds){
-        List<PassEntity> passEntities  = new ArrayList<>();
-        for(String userId : userIds){
-            PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity,userId);
+    private int addPasses(BulkPassEntity bulkPassEntity, List<String> userIds) {
+        List<PassEntity> passEntities = new ArrayList<>();
+        for (String userId : userIds) {
+            PassEntity passEntity = PassModelMapper.INSTANCE.toPassEntity(bulkPassEntity, userId);
             passEntities.add(passEntity);
         }
         return passRepository.saveAll(passEntities).size();
